@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import SingleNote from "./pages/SingleNote";
 import CreateNote from "./pages/CreateNote";
+import EditNote from "./pages/EditNote";
 
 export const instance = axios.create({
   baseURL: "http://127.0.0.1:8000",
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/note/:id" element={<SingleNote />} />
         <Route path="/create-note/" element={<CreateNote />} />
+        <Route path="/note/:id/edit" element={<EditNote />} />
       </Routes>
     </div>
   );

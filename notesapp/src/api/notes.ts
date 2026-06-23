@@ -59,3 +59,19 @@ export const createNote = async (data: NoteCreateInput): Promise<Note> => {
     throw error;
   }
 };
+export const deleteNote = async (noteId: number): Promise<void> => {
+  try {
+    await instance.delete(`/notes/${noteId}`);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        console.log("Server error:", error.response.status);
+      } else if (error.request) {
+        console.log("No response received");
+      }
+    } else {
+      console.log("Unknown error: ", error);
+    }
+    throw error;
+  }
+};

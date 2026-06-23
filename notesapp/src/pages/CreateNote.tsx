@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Note, NoteCreateInput, NoteCreateInputSchema } from "../schemas/Note";
+import { NoteCreateInput, NoteCreateInputSchema } from "../schemas/Note";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../api/notes";
 import { useNavigate } from "react-router-dom";
@@ -19,10 +19,8 @@ export default function CreateNote() {
 
   const { mutate, status } = useMutation({
     mutationFn: (data: NoteCreateInput) => createNote(data),
-    onSuccess: (newNote) => {
-      queryClient.setQueryData<Note[]>(["notes"], (old) =>
-        old ? [...old, newNote] : [newNote],
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries(["notes"]);
       navigate(`/`);
     },
   });
