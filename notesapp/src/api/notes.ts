@@ -1,6 +1,11 @@
 import axios from "axios";
 import { instance } from "../App";
-import { Note, NoteCreateInput, noteSchema } from "../schemas/Note";
+import {
+  Note,
+  NoteCreateInput,
+  noteSchema,
+  NoteUpdateInput,
+} from "../schemas/Note";
 import { CURRENT_USER_ID } from "../dummyUser";
 
 export const getSingleNote = async (noteId: number): Promise<Note> => {
@@ -71,6 +76,27 @@ export const deleteNote = async (noteId: number): Promise<void> => {
       }
     } else {
       console.log("Unknown error: ", error);
+    }
+    throw error;
+  }
+};
+
+export const updateNote = async (
+  noteId: number,
+  data: NoteUpdateInput,
+): Promise<Note> => {
+  try {
+    const response = await instance.patch(`/notes/${noteId}`, data);
+    return noteSchema.parse(response.data);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        console.log("Server error:", error.response.status);
+      } else if (error.request) {
+        console.log("No response received");
+      }
+    } else {
+      console.log("Unknown error:", error);
     }
     throw error;
   }

@@ -16,5 +16,8 @@ export const NoteCreateInputSchema = noteSchema.omit({
   user_id: true,
 });
 
+export const NoteUpdateInputSchema = NoteCreateInputSchema.partial();
+
 export type Note = z.infer<typeof noteSchema>;
 export type NoteCreateInput = z.infer<typeof NoteCreateInputSchema>;
+export type NoteUpdateInput = z.infer<typeof NoteUpdateInputSchema>;
