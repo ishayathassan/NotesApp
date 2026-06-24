@@ -1,20 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { User, UserLoginInput, UserLoginInputSchema } from "../schemas/User";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../api/user";
 import { useAuth } from "../context/AuthContext";
+import { Button, Checkbox, Input } from "antd";
 
 export default function LoginUser() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<UserLoginInput>({
     resolver: zodResolver(UserLoginInputSchema),
+    defaultValues: { remember_me: false },
   });
 
   const { mutate, status } = useMutation({
@@ -41,8 +43,12 @@ export default function LoginUser() {
             marginTop: "12px",
           }}
         >
-          <label htmlFor="">Email</label>
-          <input type="email" {...register("email")} />
+          <label htmlFor="email">Email</label>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => <Input {...field} placeholder="Email" />}
+          />
           {errors.email && <p>{errors.email.message}</p>}
         </div>
 
@@ -51,18 +57,39 @@ export default function LoginUser() {
             marginTop: "12px",
           }}
         >
-          <label htmlFor="">Password</label>
-          <input type="password" {...register("password")} />
+          <label htmlFor="password">Password</label>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <Input.Password {...field} placeholder="Password" />
+            )}
+          />
           {errors.password && <p>{errors.password.message}</p>}
         </div>
-        <div style={{ marginTop: "12px" }}>
-          <label htmlFor="">Remember me</label>
-          <input type="checkbox" {...register("remember_me")} />
+        <div style={{ marginTop: "12px", marginBottom: "12px" }}>
+          <Controller
+            name="remember_me"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onChange={(e) => field.onChange(e.target.checked)}
+              >
+                Remember me
+              </Checkbox>
+            )}
+          />
         </div>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={status === "loading"}
+          disabled={status === "loading"}
+        >
+          Login
+        </Button>
 
-        <button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Logging in" : "Login"}
-        </button>
         {status === "success" && <p>Logged in successfully</p>}
         {status === "error" && <p>Could not log in</p>}
         <p>

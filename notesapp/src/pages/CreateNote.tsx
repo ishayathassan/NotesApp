@@ -1,17 +1,18 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NoteCreateInput, NoteCreateInputSchema } from "../schemas/Note";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../api/notes";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Button, Input } from "antd";
 
 export default function CreateNote() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<NoteCreateInput>({
@@ -41,7 +42,11 @@ export default function CreateNote() {
           }}
         >
           <label htmlFor="">Title</label>
-          <input type="text" {...register("title")} />
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => <Input {...field} placeholder="Title" />}
+          />
           {errors.title && <p>{errors.title.message}</p>}
         </div>
 
@@ -51,13 +56,21 @@ export default function CreateNote() {
           }}
         >
           <label htmlFor="">Content</label>
-          <textarea {...register("content")} rows={6} />
+          <Controller
+            name="content"
+            control={control}
+            render={({ field }) => <Input.TextArea {...field} rows={6} />}
+          />
           {errors.content && <p>{errors.content.message}</p>}
         </div>
-
-        <button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Saving..." : "Submit"}
-        </button>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={status === "loading"}
+          disabled={status === "loading"}
+        >
+          Create
+        </Button>
         {status === "error" && <p>Could not save note</p>}
       </form>
     </div>
