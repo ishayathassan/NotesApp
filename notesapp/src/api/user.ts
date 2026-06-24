@@ -2,20 +2,16 @@ import axios from "axios";
 import { instance } from "../App";
 import {
   UserCreateInput,
-  UserCreateResponseSchema,
-  UserCreateResponse,
+  userSchema,
+  User,
   UserLoginInput,
-  UserLoginResponse,
   UserLoginResponseSchema,
-  UserInfo,
 } from "../schemas/User";
 
-export const createUser = async (
-  user: UserCreateInput,
-): Promise<UserCreateResponse> => {
+export const createUser = async (user: UserCreateInput): Promise<User> => {
   try {
     const response = await instance.post("/users/register", user);
-    return UserCreateResponseSchema.parse(response.data);
+    return userSchema.parse(response.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
@@ -30,7 +26,7 @@ export const createUser = async (
     throw error;
   }
 };
-export const loginUser = async (user: UserLoginInput): Promise<UserInfo> => {
+export const loginUser = async (user: UserLoginInput): Promise<User> => {
   try {
     const response = await instance.post("/users/login", user);
     const data = UserLoginResponseSchema.parse(response.data);

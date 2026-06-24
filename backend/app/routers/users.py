@@ -21,4 +21,8 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     if not user or not crud.verify_password(payload.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token, expires_in = create_token(user.id, payload.remember_me)
-    return TokenResponse(access_token=token, expires_in=expires_in)
+    return TokenResponse(
+        access_token=token,
+        expires_in=expires_in,
+        user=UserResponse.model_validate(user),
+    )

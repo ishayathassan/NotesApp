@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 class NoteCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=255)
     content: str = Field(..., min_length=1)
-    user_id: str = Field(..., min_length=1, max_length=100)
 
 
 class NoteUpdate(BaseModel):

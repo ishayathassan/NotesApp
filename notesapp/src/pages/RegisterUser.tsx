@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserCreateInput, UserCreateInputSchema } from "../schemas/User";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { createUser } from "../api/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterUser() {
   const navigate = useNavigate();
@@ -55,6 +55,9 @@ export default function RegisterUser() {
         </button>
         {status === "success" && <p>User Created successfully</p>}
         {status === "error" && <p>Could not create user</p>}
+        <p>
+          Already have an account? <Link to="/login">Log in</Link> instead
+        </p>
       </form>
     </div>
   );

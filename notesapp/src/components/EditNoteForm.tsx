@@ -28,7 +28,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
   const queryClient = useQueryClient();
 
   const { mutate, status } = useMutation({
-    mutationFn: (data: NoteUpdateInput) => updateNote(note.id, data, user?.id),
+    mutationFn: (data: NoteUpdateInput) => updateNote(note.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["notes"]);
       navigate(`/note/${note.id}/`);

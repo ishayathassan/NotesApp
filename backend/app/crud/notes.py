@@ -5,8 +5,8 @@ from app.models.note import Note
 from app.schemas.note import NoteCreate, NoteUpdate
 
 
-def create_note(db: Session, payload: NoteCreate) -> Note:
-    note = Note(**payload.model_dump())
+def create_note(db: Session, payload: NoteCreate, user_id: int) -> Note:
+    note = Note(**payload.model_dump(), user_id=str(user_id))
     db.add(note)
     db.commit()
     db.refresh(note)
@@ -19,14 +19,18 @@ def get_note(db: Session, note_id: int) -> Optional[Note]:
 
 def get_notes(
     db: Session,
-    user_id: Optional[str] = None,
+    user_id: int,
     skip: int = 0,
     limit: int = 100,
 ) -> list[Note]:
-    query = db.query(Note)
-    if user_id:
-        query = query.filter(Note.user_id == user_id)
-    return query.order_by(Note.created_at.desc()).offset(skip).limit(limit).all()
+    return (
+        db.query(Note)
+        .filter(Note.user_id == str(user_id))
+        .order_by(Note.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def update_note(db: Session, note: Note, payload: NoteUpdate) -> Note:

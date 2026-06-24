@@ -3,6 +3,8 @@ from typing import Optional
 import os
 import jwt
 from dotenv import load_dotenv
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 load_dotenv()
 
@@ -11,6 +13,8 @@ ALGORITHM = "HS256"
 
 SHORT_EXPIRY = timedelta(hours=24)
 LONG_EXPIRY = timedelta(days=30)
+
+_bearer = HTTPBearer()
 
 
 def create_token(user_id: int, remember_me: bool) -> tuple[str, int]:
@@ -27,3 +31,14 @@ def decode_token(token: str) -> Optional[int]:
         return int(payload["sub"])
     except jwt.PyJWTError:
         return None
+
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(_bearer)) -> int:
+    user_id = decode_token(credentials.credentials)
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user_id

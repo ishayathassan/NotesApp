@@ -7,6 +7,7 @@ import EditNote from "./pages/EditNote";
 import Layout from "./components/Layout";
 import RegisterUser from "./pages/RegisterUser";
 import LoginUser from "./pages/LoginUser";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 export const instance = axios.create({
   baseURL: "http://127.0.0.1:8000",
@@ -27,11 +28,14 @@ function App() {
       <Routes>
         <Route path="/register" element={<RegisterUser />} />
         <Route path="/login" element={<LoginUser />} />
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/note/:id" element={<SingleNote />} />
-          <Route path="/create-note/" element={<CreateNote />} />
-          <Route path="/note/:id/edit" element={<EditNote />} />
+
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="/note/:id" element={<SingleNote />} />
+            <Route path="/create-note/" element={<CreateNote />} />
+            <Route path="/note/:id/edit" element={<EditNote />} />
+          </Route>
         </Route>
       </Routes>
     </div>

@@ -87,7 +87,6 @@ export const deleteNote = async (noteId: number): Promise<void> => {
 export const updateNote = async (
   noteId: number,
   data: NoteUpdateInput,
-  userId: number | undefined,
 ): Promise<Note> => {
   try {
     const response = await instance.patch(`/notes/${noteId}`, data);
