@@ -13,6 +13,14 @@ export const instance = axios.create({
   timeout: 5000,
 });
 
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 function App() {
   return (
     <div className="App">

@@ -9,9 +9,11 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateNote } from "../api/notes";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function EditNoteForm({ note }: { note: Note }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -26,7 +28,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
   const queryClient = useQueryClient();
 
   const { mutate, status } = useMutation({
-    mutationFn: (data: NoteUpdateInput) => updateNote(note.id, data),
+    mutationFn: (data: NoteUpdateInput) => updateNote(note.id, data, user?.id),
     onSuccess: () => {
       queryClient.invalidateQueries(["notes"]);
       navigate(`/note/${note.id}/`);

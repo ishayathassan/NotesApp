@@ -4,9 +4,12 @@ import { NoteCreateInput, NoteCreateInputSchema } from "../schemas/Note";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../api/notes";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function CreateNote() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -18,7 +21,7 @@ export default function CreateNote() {
   const queryClient = useQueryClient();
 
   const { mutate, status } = useMutation({
-    mutationFn: (data: NoteCreateInput) => createNote(data),
+    mutationFn: (data: NoteCreateInput) => createNote(data, user?.id),
     onSuccess: () => {
       queryClient.invalidateQueries(["notes"]);
       navigate(`/`);

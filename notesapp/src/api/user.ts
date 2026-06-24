@@ -7,6 +7,7 @@ import {
   UserLoginInput,
   UserLoginResponse,
   UserLoginResponseSchema,
+  UserInfo,
 } from "../schemas/User";
 
 export const createUser = async (
@@ -19,7 +20,7 @@ export const createUser = async (
     if (axios.isAxiosError(error)) {
       if (error.response) {
         console.log("Server error:", error.response.status);
-        console.log("Server error body:", error.response.data); // add this
+        console.log("Server error body:", error.response.data);
       } else if (error.request) {
         console.log("No response received");
       }
@@ -29,17 +30,17 @@ export const createUser = async (
     throw error;
   }
 };
-export const loginUser = async (
-  user: UserLoginInput,
-): Promise<UserLoginResponse> => {
+export const loginUser = async (user: UserLoginInput): Promise<UserInfo> => {
   try {
     const response = await instance.post("/users/login", user);
-    return UserLoginResponseSchema.parse(response.data);
+    const data = UserLoginResponseSchema.parse(response.data);
+    localStorage.setItem("access_token", data.access_token);
+    return data.user;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
         console.log("Server error:", error.response.status);
-        console.log("Server error body:", error.response.data); // add this
+        console.log("Server error body:", error.response.data);
       } else if (error.request) {
         console.log("No response received");
       }

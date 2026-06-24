@@ -17,12 +17,13 @@ export default function RegisterUser() {
 
   const { mutate, status } = useMutation({
     mutationFn: (data: UserCreateInput) => createUser(data),
-    onSuccess: () => {},
+    onSuccess: () => {
+      navigate("/login");
+    },
   });
 
   const onSubmit = (user: UserCreateInput) => {
     mutate(user);
-    navigate("/login");
   };
 
   return (
@@ -50,7 +51,7 @@ export default function RegisterUser() {
         </div>
 
         <button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Saving..." : "Submit"}
+          {status === "loading" ? "Saving..." : "Register"}
         </button>
         {status === "success" && <p>User Created successfully</p>}
         {status === "error" && <p>Could not create user</p>}
